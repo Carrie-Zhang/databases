@@ -37,7 +37,7 @@ CREATE TABLE `users` (
 );
 
 
-DROP TABLE IF EXISTS `messages`;
+-- DROP TABLE IF EXISTS `messages`;
     
 CREATE TABLE `messages` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,

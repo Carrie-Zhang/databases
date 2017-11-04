@@ -3,12 +3,13 @@ var app = {
 
   //TODO: The current 'handleUsernameClick' function just toggles the class 'friend'
   //to all messages sent by the user
-  server: 'http://parse.CAMPUS.hackreactor.com/chatterbox/classes/messages',
+  server: 'http://localhost:3000/classes/messages',
   username: 'anonymous',
   roomname: 'lobby',
   lastMessageId: 0,
   friends: {},
   messages: [],
+  count: 2,
 
   init: function() {
     // Get username
@@ -42,10 +43,11 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'POST',
-      data: message,
+      data: JSON.stringify(message),
       success: function (data) {
         // Clear messages input
         app.$message.val('');
+        console.log(data); 
 
         // Trigger a fetch to update the messages, pass true to animate
         app.fetch();
@@ -60,7 +62,7 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'GET',
-      data: { order: '-createdAt' },
+      // data: { order: '-createdAt' },
       contentType: 'application/json',
       success: function(data) {
         // Don't bother if we have nothing to work with
@@ -83,6 +85,7 @@ var app = {
           // Store the ID of the most recent message
           app.lastMessageId = mostRecentMessage.objectId;
         }
+        console.log(data);
       },
       error: function(error) {
         console.error('chatterbox: Failed to fetch messages', error);
@@ -162,7 +165,7 @@ var app = {
     }
 
     var $message = $('<br><span/>');
-    $message.text(message.text).appendTo($chat);
+    $message.text(message.message).appendTo($chat);
 
     // Add the message to the UI
     app.$chats.append($chat);
@@ -212,9 +215,11 @@ var app = {
   },
 
   handleSubmit: function(event) {
+    app.count++;
     var message = {
       username: app.username,
-      text: app.$message.val(),
+      message: app.$message.val(),
+      objectId: app.count,
       roomname: app.roomname || 'lobby'
     };
 
